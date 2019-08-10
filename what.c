@@ -14,6 +14,7 @@ what_next(PyObject *self, PyObject *arg)
     PyFrameObject *frame = (PyFrameObject*) arg;
 
     // FIXME validate that current instruction is YIELD_FROM
+    // Due to optimisations, it may be the preceding GET_AWAITABLE
     //int opcode = _Py_OPCODE(*next_instr);
 
 	PyObject **stack_pointer = frame->f_stacktop;

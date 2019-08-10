@@ -40,6 +40,7 @@ async def foo():
 async def bar():
     poke(c, "deep inside")
     poke(d["f"], "deep inside")
+    print(asyncio.all_tasks())
     await asyncio.sleep(0.1)
 
 c = main()
