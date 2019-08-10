@@ -2,44 +2,46 @@ import asyncio
 import what
 
 
-cc = [None]
+d = dict()
 
 
 def poke(coro, text="what?"):
-    print("++++++++++++++")
-    print(text)
+    print(text, coro.__name__)
     try:
-        if coro.cr_frame:
-            rv = what.next(coro.cr_frame)
-            print(rv)
-        else:
-            print("coro has no frame")
+        if not coro.cr_frame:
+            raise Exception("coro has no frame")
+        print("lasti", coro.cr_frame.f_lasti)
+        rv = what.next(coro.cr_frame)
+        print("value", rv)
     except Exception as e:
-        print(e)
-    print("--------------")
+        print(":(", e)
+    print()
 
 
 async def main():
-    c = foo()
-    cc[0] = c
     poke(c, "before")
-    await c
+    d["f"] = foo()
+    poke(d["f"], "before")
+    42 and (await d["f"]) or 34
+    poke(d["f"], "after")
     poke(c, "after")
+    await asyncio.sleep(0.1)
 
 
 async def foo():
-    x = 12
     await asyncio.sleep(0.1)
-    c = cc[0]
     poke(c, "inside")
+    poke(d["f"], "inside")
+    print(42 + (13 * (poke(d["f"], "arithmetic") or 1) * 2) + 32)
+    99 and (await bar()) or 78
     await asyncio.sleep(0.1)
-    return x + 34
-    # t = asyncio.create_task(bar())
-    # await t
 
 
 async def bar():
+    poke(c, "deep inside")
+    poke(d["f"], "deep inside")
     await asyncio.sleep(0.1)
 
-
-asyncio.run(main())
+c = main()
+poke(c, "way before")
+asyncio.run(c)
