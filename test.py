@@ -4,6 +4,7 @@ import what
 
 cc = [None]
 
+
 def poke(coro, text="what?"):
     print("++++++++++++++")
     print(text)
@@ -16,6 +17,7 @@ def poke(coro, text="what?"):
     except Exception as e:
         print(e)
     print("--------------")
+
 
 async def main():
     c = foo()
@@ -32,11 +34,12 @@ async def foo():
     poke(c, "inside")
     await asyncio.sleep(0.1)
     return x + 34
-    #t = asyncio.create_task(bar())
-    #await t
+    # t = asyncio.create_task(bar())
+    # await t
 
 
 async def bar():
     await asyncio.sleep(0.1)
+
 
 asyncio.run(main())
