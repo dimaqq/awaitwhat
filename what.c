@@ -1,25 +1,37 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include "frameobject.h"
 
 static PyObject *
-what_next(PyObject *self, PyObject *args)
+what_next(PyObject *self, PyObject *arg)
 {
-    PyObject *frame = NULL;
+    PyFrameObject *frame = NULL;
+	PyObject **stack_pointer;
     PyObject *next = NULL;
 
-    if (!PyArg_ParseTuple(args, "O", &frame))
-        return NULL;
+    if (!PyFrame_Check(arg))
+	{
+		PyErr_SetString(PyExc_TypeError, "Argument must be a frame object.");
+		return NULL;
+	}
 
-    if (next) 
-    {
-        PyErr_SetString(PyExc_ValueError, "Argument must be a Python frame");
+    frame = (PyFrameObject*) arg;
+	stack_pointer = frame->f_stacktop;
+    if (!stack_pointer) {
+        PyErr_SetString(PyExc_SystemError, "stack pointer is null?");
         return NULL;
     }
-    return PyLong_FromLong(1);
+    next = *stack_pointer;
+    if (!next) {
+        PyErr_SetString(PyExc_SystemError, "thing on stack is null?");
+        return NULL;
+    }
+    Py_INCREF(next);
+    return next;
 }
 
 static PyMethodDef what_functions[] = {
-    {"next",  what_next, METH_VARARGS, "Next frame for the given frame."},
+    {"next",  what_next, METH_O, "Next frame for the given frame."},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
