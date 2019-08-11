@@ -17,10 +17,10 @@ what_next(PyObject *self, PyObject *arg)
     // Due to optimisations, it may be the preceding GET_AWAITABLE
     //int opcode = _Py_OPCODE(*next_instr);
 
-    printf("val %p top %p delta value to top: %ld\n",
-           frame->f_valuestack,
-           frame->f_stacktop,
-           (long)(frame->f_stacktop - frame->f_valuestack));
+    // printf("val %p top %p delta value to top: %ld\n",
+    //        frame->f_valuestack,
+    //        frame->f_stacktop,
+    //        (long)(frame->f_stacktop - frame->f_valuestack));
 
     PyObject **stack_pointer = frame->f_stacktop;
 

@@ -2,38 +2,43 @@ import asyncio
 import what
 
 
-d = dict()
+thecoro = None
 
 
-def poke(coro, text="what?"):
-    print(text, coro.__name__)
+def poke(coro):
     try:
         if not coro.cr_frame:
             raise Exception("coro has no frame")
-        print("lasti", coro.cr_frame.f_lasti)
+        print(coro.__name__, "lasti", coro.cr_frame.f_lasti)
         rv = what.next(coro.cr_frame)
-        print("value", rv)
+        # print("value", rv)
+        return rv
     except Exception as e:
-        print(":(", e)
+        print(":(", e, coro)
     print()
 
 
-async def foo():
-    return 42 + (88 * (3 + (await bar()) + (await bar())))
+def foretrace(coro):
+    while coro:
+        coro = poke(coro)
 
 
-async def main():
-    return await asyncio.gather(foo(), foo())
+async def tester():
+    await asyncio.sleep(0.1)
+    foretrace(thecoro)
 
+async def leaf(): await asyncio.sleep(1)
+async def baz(): await leaf()
+async def bar(): await baz()
+async def foo(): await bar()
+async def job(): await foo()
 
-async def bar():
-    poke(c, "down")
-    return 1
+async def work():
+    global thecoro
+    thecoro = job()
+    await asyncio.gather(tester(), thecoro)
 
-
-c = main()
-poke(c, "way before")
-asyncio.run(c)
+asyncio.run(work())
 
 
 # TODO
