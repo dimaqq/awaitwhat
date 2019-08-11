@@ -6,10 +6,10 @@ static PyObject *
 what_next(PyObject *self, PyObject *arg)
 {
     if (!PyFrame_Check(arg))
-	{
-		PyErr_SetString(PyExc_TypeError, "Argument must be a frame object.");
-		return NULL;
-	}
+    {
+        PyErr_SetString(PyExc_TypeError, "Argument must be a frame object.");
+        return NULL;
+    }
 
     PyFrameObject *frame = (PyFrameObject*) arg;
 
@@ -17,10 +17,20 @@ what_next(PyObject *self, PyObject *arg)
     // Due to optimisations, it may be the preceding GET_AWAITABLE
     //int opcode = _Py_OPCODE(*next_instr);
 
-	PyObject **stack_pointer = frame->f_stacktop;
+    printf("val %p top %p delta value to top: %ld\n",
+           frame->f_valuestack,
+           frame->f_stacktop,
+           (long)(frame->f_stacktop - frame->f_valuestack));
+
+    PyObject **stack_pointer = frame->f_stacktop;
+
+    if (frame->f_stacktop == frame->f_valuestack) {
+        PyErr_SetString(PyExc_ValueError, "stack is empty");
+        return NULL;
+    }
 
     if (!stack_pointer) {
-        PyErr_SetString(PyExc_SystemError, "stack pointer is null?");
+        PyErr_SetString(PyExc_ValueError, "stack pointer is null?");
         return NULL;
     }
 

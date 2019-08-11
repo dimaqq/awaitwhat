@@ -18,31 +18,30 @@ def poke(coro, text="what?"):
     print()
 
 
-async def main():
-    poke(c, "before")
-    d["f"] = foo()
-    poke(d["f"], "before")
-    42 and (await d["f"]) or 34
-    poke(d["f"], "after")
-    poke(c, "after")
-    await asyncio.sleep(0.1)
-
-
 async def foo():
-    await asyncio.sleep(0.1)
-    poke(c, "inside")
-    poke(d["f"], "inside")
-    print(42 + (13 * (poke(d["f"], "arithmetic") or 1) * 2) + 32)
-    99 and (await bar()) or 78
-    await asyncio.sleep(0.1)
+    return 42 + (88 * (3 + (await bar()) + (await bar())))
+
+
+async def main():
+    return await asyncio.gather(foo(), foo())
 
 
 async def bar():
-    poke(c, "deep inside")
-    poke(d["f"], "deep inside")
-    print(asyncio.all_tasks())
-    await asyncio.sleep(0.1)
+    poke(c, "down")
+    return 1
+
 
 c = main()
 poke(c, "way before")
 asyncio.run(c)
+
+
+# TODO
+#
+# When a coro is blocked on gather(), the thing on the stack is:
+# <_asyncio.FutureIter object at 0x1086b1040>
+#
+# This is because instruction preceding YIELD_FROM is GET_AWAITABLE
+# Which converts Future into an iterator:
+#
+# https://github.com/python/cpython/blob/51aac15f6d525595e200e3580409c4b8656e8a96/Modules/_asynciomodule.c#L1633
