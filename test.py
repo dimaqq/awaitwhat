@@ -1,31 +1,64 @@
 import asyncio
+import logging
+import types
 import what
 
 
 thecoro = None
 
 
-def poke(coro):
-    try:
-        if not coro.cr_frame:
-            raise Exception("coro has no frame")
-        print(coro.__name__, "lasti", coro.cr_frame.f_lasti)
-        rv = what.next(coro.cr_frame)
-        # print("value", rv)
-        return rv
-    except Exception as e:
-        print(":(", e, coro)
-    print()
+def frames(coro):
+    while coro:
+        try:
+            yield f"{coro.__name__} ip {coro.cr_frame.f_lasti}"
+        except Exception as e:
+            yield str(coro)
+            return
+
+        try:
+            coro = what.next(coro.cr_frame)
+        except Exception as e:
+            yield str(e)
+            return
 
 
 def foretrace(coro):
-    while coro:
-        coro = poke(coro)
+    for line in frames(coro):
+        print(line)
+    print()
+
+
+def print_stack(s):
+    for f in s:
+        print(f)
+
+
+def extended_stack(s):
+    stack = s[:]
+    while isinstance(stack[-1], types.FrameType):
+        try:
+            n = what.next(stack[-1])
+        except Exception as e:
+            n = str(e)
+        try:
+            f = n.cr_frame
+        except Exception as e:
+            f = f"{n}: {e}"
+        stack.append(f)
+    return stack
+
+
+def trace_all_tasks():
+    for t in asyncio.Task.all_tasks():
+        for line in extended_stack(t.get_stack()):
+            print(line)
+        print()
 
 
 async def tester():
     await asyncio.sleep(0.1)
     foretrace(thecoro)
+    trace_all_tasks()
 
 async def leaf(): await asyncio.sleep(1)
 async def baz(): await leaf()
