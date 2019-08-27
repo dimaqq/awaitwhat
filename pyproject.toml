@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "awaitwhat"
+version = "1.0"
+description = "FIXME"
+authors = ["Dima Tisnek <dimaqq@gmail.com>"]
+license = "MIT"
+readme = "readme.md"
+homepage = "FIXME"
+repository = "https://github.com/dimaqq/awaitwhat"
+documentation = "FIXME"
+keywords = ["asyncio"]
+
+build = "build.py"
+
+# packages = [{include = "test.py"}]
+packages = [{include = "awaitwhat"}]
+
+[tool.poetry.dependencies]
+python = ">=3.7"
+
+[tool.poetry.dev-dependencies]
+pytest = "*"
+black = { version = "^19.3b0", python = "^3.8" }
+pre-commit = "^1.18.2"
+
+[build-system]
+requires = ["poetry>=1.0.0b1"]
+build-backend = "poetry.masonry.api"
