@@ -34,10 +34,8 @@ what_next(PyObject *self, PyObject *arg)
         return NULL;
     }
 
-    // FIXME where's the "receiver" on the stack?
-    // or, rather, where's the top value on the stack?
+    // Top-most on the value stack ought to be the "receiver".
     PyObject *next = stack_pointer[-1];
-    //PyObject *next = *stack_pointer;
 
     if (!next) {
         PyErr_SetString(PyExc_SystemError, "thing on stack is null?");
@@ -62,7 +60,7 @@ static struct PyModuleDef whatmodule = {
 };
 
 PyMODINIT_FUNC
-PyInit_what(void)
+PyInit__what(void)
 {
     PyObject *m;
 
