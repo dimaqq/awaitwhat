@@ -47,14 +47,14 @@ what_next(PyObject *self, PyObject *arg)
 }
 
 static PyMethodDef what_functions[] = {
-    {"next",  what_next, METH_O, "Next frame for the given frame."},
+    {"next",  what_next, METH_O, "Next frame for the given frame."}, /* FIXME: function docstring */
     {NULL, NULL, 0, NULL}
 };
 
 static struct PyModuleDef whatmodule = {
     PyModuleDef_HEAD_INIT,
     "what", /* name of module */
-    NULL,   /* module documentation, may be NULL */
+    NULL,   /* FIXME: module docstring, module documentation, may be NULL */
     0,      /* size of per-interpreter state of the module */
     what_functions
 };
