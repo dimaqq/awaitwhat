@@ -1,46 +1,5 @@
 import asyncio
-import logging
-import types
-import what
-
-
-thecoro = None
-
-
-def frames(coro):
-    while coro:
-        try:
-            yield f"{coro.__name__} ip {coro.cr_frame.f_lasti}"
-        except Exception as e:
-            yield str(coro)
-            return
-
-        try:
-            coro = what.next(coro.cr_frame)
-        except Exception as e:
-            yield str(e)
-            return
-
-
-def foretrace(coro):
-    for line in frames(coro):
-        print(line)
-    print()
-
-
-def extended_stack(s):
-    stack = s[:]
-    while isinstance(stack[-1], types.FrameType):
-        try:
-            n = what.next(stack[-1])
-        except Exception as e:
-            n = str(e)
-        try:
-            f = n.cr_frame
-        except Exception as e:
-            f = f"{n}: {e}"
-        stack.append(f)
-    return stack
+from awaitwhat import extended_stack
 
 
 def trace_all_tasks():
@@ -63,7 +22,6 @@ def extended_trace_all_tasks():
 
 async def tester():
     await asyncio.sleep(0.1)
-    # foretrace(thecoro)
     trace_all_tasks()
     extended_trace_all_tasks()
 
@@ -74,9 +32,7 @@ async def foo(): await bar()
 async def job(): await foo()
 
 async def work():
-    global thecoro
-    thecoro = job()
-    await asyncio.gather(tester(), thecoro)
+    await asyncio.gather(tester(), job())
 
 asyncio.run(work())
 
