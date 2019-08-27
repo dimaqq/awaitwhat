@@ -2,6 +2,61 @@
 
 Tell you what waits for what in an `async/await` program.
 
+#### TL;DR
+
+Say you have this code:
+```py
+async def leaf():
+    await asyncio.sleep(1)  # imagine you don't know this
+
+
+async def baz():
+    await leaf()
+
+
+async def bar():
+    await baz()
+
+
+async def foo():
+    await bar()
+
+
+async def job():
+    await foo()
+
+
+async def work():
+    await asyncio.gather(..., job())
+```
+
+Now that code is stuck and and you want to know why.
+
+Python built-in tools give you this, and it's not helpful:
+```py
+---- task
+<frame at 0x7ffd90266378, file 'test/test.py', line 46, code job>
+
+---- task
+<frame at 0x7ffd90080808, file 'test/test.py', line 50, code work>
+```
+
+This library gives you more:
+```py
+---- task
+<frame at 0x7ffd90266378, file 'test/test.py', line 46, code job>
+<frame at 0x7ffd90266510, file 'test/test.py', line 42, code foo>
+<frame at 0x7ffd902666a8, file 'test/test.py', line 38, code bar>
+<frame at 0x7ffd90266840, file 'test/test.py', line 34, code baz>
+<frame at 0x7ffd90269388, file 'test/test.py', line 30, code leaf>
+<frame at 0x7ffd9025f9f8, file '/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/asyncio/tasks.py', line 568, code sleep>
+<_asyncio.FutureIter object at 0x7ffd90239f18>: '_asyncio.FutureIter' object has no attribute 'cr_frame'
+
+---- task
+<frame at 0x7ffd90080808, file 'test/test.py', line 50, code work>
+<_asyncio.FutureIter object at 0x7ffd90239e58>: '_asyncio.FutureIter' object has no attribute 'cr_frame'
+```
+
 #### Mailing list reference
 
 https://mail.python.org/archives/list/async-sig@python.org/thread/6E2LRVLKYSMGEAZ7OYOYR3PMZUUYSS3K/
