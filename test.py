@@ -50,8 +50,10 @@ def extended_stack(s):
 
 def trace_all_tasks():
     for t in asyncio.Task.all_tasks():
-        for line in extended_stack(t.get_stack()):
-            print(line)
+        print("----task-----")
+        # for frame in t.get_stack():
+        for frame in extended_stack(t.get_stack()):
+            print(frame)
         print()
 
 
