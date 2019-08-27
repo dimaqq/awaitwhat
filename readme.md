@@ -6,24 +6,25 @@ Tell you what waits for what in an `async/await` program.
 
 Say you have this code:
 ```py
-async def leaf():
-    await asyncio.sleep(1)  # imagine you don't know this
 
-
-async def baz():
-    await leaf()
-
-
-async def bar():
-    await baz()
+async def job():
+    await foo()
 
 
 async def foo():
     await bar()
 
 
-async def job():
-    await foo()
+async def bar():
+    await baz()
+
+
+async def baz():
+    await leaf()
+
+
+async def leaf():
+    await asyncio.sleep(1)  # imagine you don't know this
 
 
 async def work():
