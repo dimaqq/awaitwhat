@@ -28,11 +28,6 @@ def foretrace(coro):
     print()
 
 
-def print_stack(s):
-    for f in s:
-        print(f)
-
-
 def extended_stack(s):
     stack = s[:]
     while isinstance(stack[-1], types.FrameType):
@@ -49,9 +44,18 @@ def extended_stack(s):
 
 
 def trace_all_tasks():
+    print("#### Python built-in stack trace")
     for t in asyncio.Task.all_tasks():
-        print("----task-----")
-        # for frame in t.get_stack():
+        print("---- task")
+        for frame in t.get_stack():
+            print(frame)
+        print()
+
+
+def extended_trace_all_tasks():
+    print("#### Extended stack trace")
+    for t in asyncio.Task.all_tasks():
+        print("---- task")
         for frame in extended_stack(t.get_stack()):
             print(frame)
         print()
@@ -59,8 +63,9 @@ def trace_all_tasks():
 
 async def tester():
     await asyncio.sleep(0.1)
-    foretrace(thecoro)
+    # foretrace(thecoro)
     trace_all_tasks()
+    extended_trace_all_tasks()
 
 async def leaf(): await asyncio.sleep(1)
 async def baz(): await leaf()
