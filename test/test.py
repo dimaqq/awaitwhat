@@ -25,14 +25,30 @@ async def tester():
     trace_all_tasks()
     extended_trace_all_tasks()
 
-async def leaf(): await asyncio.sleep(1)
-async def baz(): await leaf()
-async def bar(): await baz()
-async def foo(): await bar()
-async def job(): await foo()
+
+async def leaf():
+    await asyncio.sleep(1)
+
+
+async def baz():
+    await leaf()
+
+
+async def bar():
+    await baz()
+
+
+async def foo():
+    await bar()
+
+
+async def job():
+    await foo()
+
 
 async def work():
     await asyncio.gather(tester(), job())
+
 
 asyncio.run(work())
 
