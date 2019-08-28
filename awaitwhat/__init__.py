@@ -3,6 +3,22 @@ import types
 from . import _what
 
 
+class FakeCode:
+    co_filename = "<Sentinel>"
+    co_name = None
+
+    def __init__(self, name):
+        self.co_name = name
+
+
+class FakeFrame:
+    f_lineno = 0
+    f_globals = None
+
+    def __init__(self, name):
+        self.f_code = FakeCode(name)
+
+
 def extend_stack(s, limit=None):
     stack = s[:]
     while isinstance(stack[-1], types.FrameType):
@@ -16,7 +32,7 @@ def extend_stack(s, limit=None):
             f = n.cr_frame
         except Exception as e:
             # FIXME this should be something that prints like frame
-            f = f"{n}: {e}"
+            f = FakeFrame(f"{n}: {e}")
         stack.append(f)
     return stack
 
@@ -25,7 +41,7 @@ def task_get_stack(task, limit):
     stack = _task_get_stack(task, limit)
     if limit is None or len(stack) < limit:
         # FIXME should the stack be extended if there's an exception?
-        stack = extended_stack(stack, limit)
+        stack = extend_stack(stack, limit)
     return stack
 
 

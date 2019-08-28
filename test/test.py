@@ -1,47 +1,24 @@
 import asyncio
 import linecache
-from awaitwhat import extend_stack
+from awaitwhat import extend_stack, _task_print_stack, task_print_stack
+import sys
 
 
 def trace_all_tasks():
-    print("#### Python built-in stack trace")
+    print("### Python native task stack traces")
     for t in asyncio.Task.all_tasks():
-        print("---- task")
-        for frame in t.get_stack():
-            print(frame)
+        _task_print_stack(t, None, sys.stdout)
         print()
 
-
-def extended_trace_all_tasks():
-    print("#### Extended stack trace")
-    extracted_list = []
-    checked = set()
+    print("### Extended task stack traces")
     for t in asyncio.Task.all_tasks():
-        print("---- task")
-        for frame in extend_stack(t.get_stack()):
-            print(frame)
+        task_print_stack(t, None, sys.stdout)
         print()
-    return extracted_list
-
-    # FIXME
-    exc = task._exception
-    if not extracted_list:
-        print(f"No stack for {task!r}", file=file)
-    elif exc is not None:
-        print(f"Traceback for {task!r} (most recent call last):", file=file)
-    else:
-        print(f"Stack for {task!r} (most recent call last):", file=file)
-
-    traceback.print_list(extracted_list, file=file)
-    if exc is not None:
-        for line in traceback.format_exception_only(exc.__class__, exc):
-            print(line, file=file, end="")
 
 
 async def tester():
     await asyncio.sleep(0.1)
     trace_all_tasks()
-    extended_trace_all_tasks()
 
 
 async def job():
