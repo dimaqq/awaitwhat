@@ -1,6 +1,7 @@
 from asyncio.base_tasks import _task_print_stack, _task_get_stack
 import types
 from . import _what
+from . import gather
 
 
 class FakeCode:
@@ -19,6 +20,7 @@ class FakeFrame:
         self.f_code = FakeCode(name)
 
 
+# FIXME: what order is the stack in, as in, is it reversed?
 def extend_stack(s, limit=None):
     stack = s[:]
     while isinstance(stack[-1], types.FrameType):
@@ -66,3 +68,28 @@ class Wrapper:
 
 def task_print_stack(task, limit, file):
     return _task_print_stack(Wrapper(task), limit, file)
+
+
+# FIXME: what can be awaited:
+#
+# - coro (done)
+# - Task (enumerated, but needs a bridge)
+# - Future (naked, unclear who ought to resolve it)
+# - Event (e.wait() is a coro, but needs a bridge?)
+# - gather (via callback)
+# - shield (via callback)
+# - asyncio.run (via callback)
+#
+# - TaskWakeupMethWrapper (via callback)
+# - bridge FutureIter to Future (or just rely on Task wait_for=<...>
+
+# FIXME: callbacks:
+#
+# top-level event loop thing:
+# cb=[_run_until_complete_cb() at /Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/asyncio/base_events.py:158
+#
+# gather:
+# cb=[gather.<locals>._done_callback() at /Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/asyncio/tasks.py:664
+#
+# shield:
+# ...

@@ -1,19 +1,28 @@
 import asyncio
-import linecache
-from awaitwhat import extend_stack, _task_print_stack, task_print_stack
+import awaitwhat
 import sys
 
 
 def trace_all_tasks():
     print("### Python native task stack traces")
     for t in asyncio.Task.all_tasks():
-        _task_print_stack(t, None, sys.stdout)
+        asyncio.base_tasks._task_print_stack(t, None, sys.stdout)
         print()
 
     print("### Extended task stack traces")
     for t in asyncio.Task.all_tasks():
-        task_print_stack(t, None, sys.stdout)
+        awaitwhat.task_print_stack(t, None, sys.stdout)
         print()
+
+    tt = asyncio.Task.all_tasks()
+    t = list(tt)[0]
+    print(t)
+    cb = awaitwhat.gather.task_callback(t)
+    try:
+        awaitwhat.gather.decipher_done_callback(cb)
+    except Exception as e:
+        print("failed to decipher", e)
+    __import__("pdb").set_trace()
 
 
 async def tester():
