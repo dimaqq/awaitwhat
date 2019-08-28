@@ -1,6 +1,6 @@
 import asyncio
 import linecache
-from awaitwhat import extended_stack
+from awaitwhat import extend_stack
 
 
 def trace_all_tasks():
@@ -18,21 +18,8 @@ def extended_trace_all_tasks():
     checked = set()
     for t in asyncio.Task.all_tasks():
         print("---- task")
-        for f in extended_stack(t.get_stack()):
-            try:
-                # borrowed from cpython/Lib/asyncio/base_tasks.py
-                lineno = f.f_lineno
-                co = f.f_code
-                filename = co.co_filename
-                name = co.co_name
-                if filename not in checked:
-                    checked.add(filename)
-                    linecache.checkcache(filename)
-                line = linecache.getline(filename, lineno, f.f_globals)
-                extracted_list.append((filename, lineno, name, line))
-                print(filename, lineno, line)
-            except Exception as e:
-                print(f, e)
+        for frame in extend_stack(t.get_stack()):
+            print(frame)
         print()
     return extracted_list
 
