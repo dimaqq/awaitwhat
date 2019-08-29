@@ -3,6 +3,8 @@ import types
 from . import _what
 from . import gather
 from . import stack
+from . import dot
+from . import blocker
 
 # FIXME: shorter to do
 #

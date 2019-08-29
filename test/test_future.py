@@ -1,4 +1,5 @@
 import asyncio
+import awaitwhat
 
 
 FUTURES = []
@@ -46,32 +47,21 @@ async def test():
     import sys
 
     await asyncio.sleep(0.1)
-    print("### Python native")
-    for t in asyncio.all_tasks():
-        print(name(t))
-        asyncio.base_tasks._task_print_stack(t, None, sys.stdout)
-        print()
-
-    for t in asyncio.all_tasks():
-        waiter = t._fut_waiter
-        """
-        # FIXME waiter is not a Task, it's a:
-        * _asyncio.Future
-        * asyncio.tasks._GatheringFuture
-        * ...
-        * None
-        """
-        try:
-            waiter = ", ".join(map(name, waiter._children))
-        except AttributeError:
-            pass
-        print(f"{name(t)} -> {waiter}")
+    # print("### Python native")
+    # for t in asyncio.all_tasks():
+    # print(name(t))
+    # asyncio.base_tasks._task_print_stack(t, None, sys.stdout)
+    # print()
 
     # Extended stack
     # import awaitwhat
 
-    for f in FUTURES:
-        f.set_result(None)
+    try:
+        tt = asyncio.all_tasks()
+        print(awaitwhat.dot.dumps(tt))
+    finally:
+        for f in FUTURES:
+            f.set_result(None)
 
 
 if __name__ == "__main__":
