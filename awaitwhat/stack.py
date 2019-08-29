@@ -20,7 +20,6 @@ class FakeFrame:
         self.f_code = FakeCode(name)
 
 
-# FIXME: what order is the stack in, as in, is it reversed?
 def extend_stack(s, limit=None):
     stack = s[:]
     while isinstance(stack[-1], types.FrameType):
@@ -33,7 +32,6 @@ def extend_stack(s, limit=None):
         try:
             f = n.cr_frame
         except Exception as e:
-            # FIXME this should be something that prints like frame
             f = FakeFrame(f"{n}: {e}")
         stack.append(f)
     return stack
