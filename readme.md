@@ -58,6 +58,11 @@ Stack for <Task pending coro=<job() …> wait_for=<Future pending cb=[<TaskWakeu
   File "<Sentinel>", line 0, in <_asyncio.FutureIter object at 0x7fb6981690d8>: …
 ```
 
+### Dependency Graph
+
+![Alt text](graphical output for test_future.py)
+<img src="https://raw.github.com/dimaqq/awaitwhat/master/doc/test_future.svg?sanitize=true">
+
 ### References
 
 https://mail.python.org/archives/list/async-sig@python.org/thread/6E2LRVLKYSMGEAZ7OYOYR3PMZUUYSS3K/
