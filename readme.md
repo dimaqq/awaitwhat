@@ -67,8 +67,8 @@ https://mail.python.org/archives/list/async-sig@python.org/thread/6E2LRVLKYSMGEA
 > I'm recently debugging a long-running asyncio program that appears to get stuck about once a week.
 >
 > The tools I've discovered so far are:
-> high level: `asyncio.all_tasks()` + `asyncio.Task.get_stack()`
-> low level: `loop._selector._fd_to_key`
+> * high level: `asyncio.all_tasks()` + `asyncio.Task.get_stack()`
+> * low level: `loop._selector._fd_to_key`
 >
 > What's missing is the middle level, i.e. stack-like linkage of what is waiting for what. For a practical example, consider:
 >
