@@ -60,7 +60,6 @@ Stack for <Task pending coro=<job() …> wait_for=<Future pending cb=[<TaskWakeu
 
 ### Dependency Graph
 
-![Alt text](graphical output for test_future.py)
 <img src="https://raw.github.com/dimaqq/awaitwhat/master/doc/test_future.svg?sanitize=true">
 
 ### References
