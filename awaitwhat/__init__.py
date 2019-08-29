@@ -38,3 +38,14 @@ from . import stack
 #
 # shield:
 # ...
+
+
+# TODO
+#
+# When a coro is blocked on gather(), the thing on the stack is:
+# <_asyncio.FutureIter object at 0x1086b1040>
+#
+# This is because instruction preceding YIELD_FROM is GET_AWAITABLE
+# Which converts Future into an iterator:
+#
+# https://github.com/python/cpython/blob/51aac15f6d525595e200e3580409c4b8656e8a96/Modules/_asynciomodule.c#L1633

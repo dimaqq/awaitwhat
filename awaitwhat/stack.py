@@ -1,4 +1,7 @@
 """ Shows what a coroutine waits for """
+import asyncio
+import types
+from . import _what
 
 
 class FakeCode:
@@ -37,7 +40,7 @@ def extend_stack(s, limit=None):
 
 
 def task_get_stack(task, limit):
-    stack = _task_get_stack(task, limit)
+    stack = asyncio.base_tasks._task_get_stack(task, limit)
     if limit is None or len(stack) < limit:
         # FIXME should the stack be extended if there's an exception?
         stack = extend_stack(stack, limit)
@@ -64,4 +67,4 @@ class Wrapper:
 
 
 def task_print_stack(task, limit, file):
-    return _task_print_stack(Wrapper(task), limit, file)
+    return asyncio.base_tasks._task_print_stack(Wrapper(task), limit, file)

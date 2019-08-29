@@ -11,7 +11,7 @@ def trace_all_tasks():
 
     print("### Extended task stack traces")
     for t in asyncio.Task.all_tasks():
-        awaitwhat.task_print_stack(t, None, sys.stdout)
+        awaitwhat.stack.task_print_stack(t, None, sys.stdout)
         print()
 
     tt = asyncio.Task.all_tasks()
@@ -22,7 +22,7 @@ def trace_all_tasks():
         awaitwhat.gather.decipher_done_callback(cb)
     except Exception as e:
         print("failed to decipher", e)
-    __import__("pdb").set_trace()
+    # __import__("pdb").set_trace()
 
 
 async def tester():
@@ -54,15 +54,5 @@ async def work():
     await asyncio.gather(tester(), job())
 
 
-asyncio.run(work())
-
-
-# TODO
-#
-# When a coro is blocked on gather(), the thing on the stack is:
-# <_asyncio.FutureIter object at 0x1086b1040>
-#
-# This is because instruction preceding YIELD_FROM is GET_AWAITABLE
-# Which converts Future into an iterator:
-#
-# https://github.com/python/cpython/blob/51aac15f6d525595e200e3580409c4b8656e8a96/Modules/_asynciomodule.c#L1633
+if __name__ == "__main__":
+    asyncio.run(work())
