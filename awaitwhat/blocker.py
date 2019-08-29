@@ -8,6 +8,7 @@ def blockers(task):
         return
     # asyncio.gather()
     try:
+        # ideally check `w` type
         return w._children
     except AttributeError:
         pass

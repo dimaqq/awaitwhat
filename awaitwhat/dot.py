@@ -28,7 +28,7 @@ def concise_other(other):
     return other
 
 
-def describe(task):
+def describe(task, current=None):
     if isinstance(task, asyncio.Task):
         buf = io.StringIO()
         data = task_print_stack(task, None, buf)
@@ -36,7 +36,9 @@ def describe(task):
             name = task.get_name()
         except AttributeError:
             name = "Task"
-        label = concise_stack_trace(f"{name}\n{buf.getvalue()}")
+        # FIXME can we ever see a "done" task?
+        state = "current" if task is current else "pending"
+        label = concise_stack_trace(f"{name} {state}\n{buf.getvalue()}")
     else:
         label = concise_other(str(task))
     label = json.dumps(label).replace("\\n", r"\l")
@@ -50,9 +52,13 @@ def dumps(tasks):
     """
 
     # dot format requires a node as target of an edge
+    try:
+        current = asyncio.current_task()
+    except RuntimeError:
+        current = None
     stops = {t: blockers(t) or [f"<Not blocked {random.random()}>"] for t in tasks}
     nodes = set(sum(stops.values(), list(stops.keys())))
-    nodes = "\n        ".join(f"{id(t)} {describe(t)}" for t in nodes)
+    nodes = "\n        ".join(f"{id(t)} {describe(t, current)}" for t in nodes)
 
     edges = "\n        ".join(
         f"{id(k)} -> {', '.join(str(id(v)) for v in vv)}" for k, vv in stops.items()
