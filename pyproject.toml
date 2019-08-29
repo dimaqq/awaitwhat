@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "awaitwhat"
 version = "19.1a1"
-description = "FIXME"
+description = "async/await introspection"
 authors = ["Dima Tisnek <dimaqq@gmail.com>"]
 license = "MIT"
 readme = "readme.md"
