@@ -35,27 +35,27 @@ Now that code is stuck and and you want to know why.
 
 Python built-in tools give you this, and it's not helpful:
 ```py
----- task
-<frame at 0x7ffd90266378, file 'test/test.py', line 46, code job>
-
----- task
-<frame at 0x7ffd90080808, file 'test/test.py', line 50, code work>
+Stack for <Task pending coro=<job() …> wait_for=<Future pending cb=[<TaskWakeupMethWrapper …>()]> cb=[…]> (most recent call last):
+  File "test/test_stack.py", line 34, in job
+    await foo()
 ```
 
 This library gives you more:
 ```py
----- task
-<frame at 0x7ffd90266378, file 'test/test.py', line 46, code job>
-<frame at 0x7ffd90266510, file 'test/test.py', line 42, code foo>
-<frame at 0x7ffd902666a8, file 'test/test.py', line 38, code bar>
-<frame at 0x7ffd90266840, file 'test/test.py', line 34, code baz>
-<frame at 0x7ffd90269388, file 'test/test.py', line 30, code leaf>
-<frame at 0x7ffd9025f9f8, file '/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/asyncio/tasks.py', line 568, code sleep>
-<_asyncio.FutureIter object at 0x7ffd90239f18>: '_asyncio.FutureIter' object has no attribute 'cr_frame'
-
----- task
-<frame at 0x7ffd90080808, file 'test/test.py', line 50, code work>
-<_asyncio.FutureIter object at 0x7ffd90239e58>: '_asyncio.FutureIter' object has no attribute 'cr_frame'
+Stack for <Task pending coro=<job() …> wait_for=<Future pending cb=[<TaskWakeupMethWrapper …>()]> cb=[…]> (most recent call last):
+  File "test/test_stack.py", line 34, in job
+    await foo()
+  File "test/test_stack.py", line 38, in foo
+    await bar()
+  File "test/test_stack.py", line 42, in bar
+    await baz()
+  File "test/test_stack.py", line 46, in baz
+    await leaf()
+  File "test/test_stack.py", line 50, in leaf
+    await asyncio.sleep(1)
+  File "/…/asyncio/tasks.py", line 568, in sleep
+    return await future
+  File "<Sentinel>", line 0, in <_asyncio.FutureIter object at 0x7fb6981690d8>: …
 ```
 
 #### Mailing list reference
