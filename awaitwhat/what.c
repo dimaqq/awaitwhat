@@ -5,17 +5,16 @@
 static PyObject *
 what_next(PyObject *self, PyObject *arg)
 {
-    if (!PyFrame_Check(arg))
-    {
+    if (!PyFrame_Check(arg)) {
         PyErr_SetString(PyExc_TypeError, "Argument must be a frame object.");
         return NULL;
     }
 
-    PyFrameObject *frame = (PyFrameObject*) arg;
+    PyFrameObject *frame = (PyFrameObject *)arg;
 
     // FIXME validate that current instruction is YIELD_FROM
     // Due to optimisations, it may be the preceding GET_AWAITABLE
-    //int opcode = _Py_OPCODE(*next_instr);
+    // int opcode = _Py_OPCODE(*next_instr);
 
     // printf("val %p top %p delta value to top: %ld\n",
     //        frame->f_valuestack,
@@ -47,17 +46,15 @@ what_next(PyObject *self, PyObject *arg)
 }
 
 static PyMethodDef what_functions[] = {
-    {"next",  what_next, METH_O, "Next frame for the given frame."}, /* FIXME: function docstring */
-    {NULL, NULL, 0, NULL}
-};
+    {"next", what_next, METH_O,
+     "Next frame for the given frame."}, /* FIXME: function docstring */
+    {NULL, NULL, 0, NULL}};
 
 static struct PyModuleDef whatmodule = {
-    PyModuleDef_HEAD_INIT,
-    "what", /* name of module */
-    NULL,   /* FIXME: module docstring, module documentation, may be NULL */
-    0,      /* size of per-interpreter state of the module */
-    what_functions
-};
+    PyModuleDef_HEAD_INIT, "what", /* name of module */
+    NULL, /* FIXME: module docstring, module documentation, may be NULL */
+    0,    /* size of per-interpreter state of the module */
+    what_functions};
 
 PyMODINIT_FUNC
 PyInit__what(void)
