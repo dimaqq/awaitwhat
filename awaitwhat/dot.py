@@ -3,7 +3,6 @@ import asyncio
 import io
 import itertools
 import json
-import random
 import re
 from .blocker import blockers
 from .stack import task_print_stack

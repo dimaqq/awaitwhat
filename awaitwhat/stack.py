@@ -1,5 +1,6 @@
 """ Shows what a coroutine waits for """
 import asyncio
+import inspect
 import types
 from . import _what
 
@@ -8,16 +9,18 @@ class FakeCode:
     co_filename = "<Sentinel>"
     co_name = None
 
-    def __init__(self, name):
+    def __init__(self, name, filename=None):
         self.co_name = name
+        if filename is not None:
+            self.co_filename = filename
 
 
 class FakeFrame:
     f_lineno = 0
     f_globals = None
 
-    def __init__(self, name):
-        self.f_code = FakeCode(name)
+    def __init__(self, name, filename=None):
+        self.f_code = FakeCode(name, filename=filename)
 
 
 def extend_stack(s, limit=None):
@@ -29,6 +32,23 @@ def extend_stack(s, limit=None):
             n = _what.next(stack[-1])
         except Exception as e:
             n = str(e)
+        try:
+            # maybe it's `asyncio.sleep()`
+            if inspect.iscoroutine(n) and n.cr_code is asyncio.sleep.__code__:
+                info = inspect.getcoroutinelocals(n)
+                delay = info["delay"]
+                h = info["h"]
+                remaining = h._when - h._loop.time()
+                stack.append(
+                    FakeFrame(
+                        f"asyncio.sleep({delay}), remaining: {remaining}",
+                        filename="asyncio",
+                    )
+                )
+                continue
+                # FIXME: this hides the `await future` that sleep is blocked on
+        except Exception:
+            pass
         try:
             f = n.cr_frame
         except Exception as e:
