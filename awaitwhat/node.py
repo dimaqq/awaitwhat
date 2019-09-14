@@ -23,7 +23,7 @@ class Node:
 def build_node(task, current):
     if isinstance(task, asyncio.Task):
         buf = io.StringIO()
-        data = task_print_stack(task, None, buf)
+        task_print_stack(task, None, buf)
         try:
             name = task.get_name()
         except AttributeError:
