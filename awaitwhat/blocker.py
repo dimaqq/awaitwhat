@@ -1,11 +1,12 @@
 import inspect
+import random
 
 
 def blockers(task):
     """What does this task wait for?"""
     w = task._fut_waiter
     if not w:
-        return
+        return [f'<Not blocked {random.random()}>']
     # asyncio.gather()
     try:
         # ideally check `w` type
