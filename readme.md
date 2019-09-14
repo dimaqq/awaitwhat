@@ -2,6 +2,30 @@
 
 Tell you what waits for what in an `async/await` program.
 
+## Sprint Setup
+
+* [Python3.8](https://www.python.org/downloads/release/python-380b4/) or [Python 3.7](https://www.python.org/downloads/release/python-374/)
+* Your platform dev tools (compiler, etc).
+* Ensure that `python` is 3.8 or 3.7
+* Install `poetry`
+* Clone this repository
+* Look at [tests](https://github.com/dimaqq/awaitwhat/tree/master/test)
+* Look at [issues](https://github.com/dimaqq/awaitwhat/issues)
+
+```
+> python --version
+Python 3.7.4    #👌
+Python 3.8.0b4  #👌
+… ~/x/awaitwhat>
+curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+git clone git@github.com:dimaqq/awaitwhat.git
+cd awaitwhat
+poetry build    # builds a C extension in this project
+poetry install  # installs projects dependencies in a venv
+poetry shell    # 
+poetry install -e .
+```
+
 ### TL;DR
 
 Say you have this code:
