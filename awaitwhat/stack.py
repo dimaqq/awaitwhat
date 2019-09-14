@@ -9,16 +9,18 @@ class FakeCode:
     co_filename = "<Sentinel>"
     co_name = None
 
-    def __init__(self, name):
+    def __init__(self, name, filename=None):
         self.co_name = name
+        if filename is not None:
+            self.co_filename = filename
 
 
 class FakeFrame:
     f_lineno = 0
     f_globals = None
 
-    def __init__(self, name):
-        self.f_code = FakeCode(name)
+    def __init__(self, name, filename=None):
+        self.f_code = FakeCode(name, filename=filename)
 
 
 def extend_stack(s, limit=None):
@@ -27,17 +29,25 @@ def extend_stack(s, limit=None):
         if limit is not None and limit >= len(stack):
             break
         try:
-            # maybe it's `asyncio.sleep()`
-            if stack[-1].f_code is asyncio.sleep.__code__:
-                info = inspect.getcoroutinelocals(stack[-1])
-                stack[-1] = FakeFrame(f"asyncio.sleep({info})")
-                # FIXME: this hides the `await future` that sleep is blocked on
-        except Exception:
-            pass
-        try:
             n = _what.next(stack[-1])
         except Exception as e:
             n = str(e)
+        try:
+            # maybe it's `asyncio.sleep()`
+            if inspect.iscoroutine(n) and n.cr_code is asyncio.sleep.__code__:
+                info = inspect.getcoroutinelocals(n)
+                delay = info["delay"]
+                when = info["h"]._when
+                # FIXME: `when` appears to be an offset from event loop start
+                stack.append(
+                    FakeFrame(
+                        f"asyncio.sleep({delay}), when: {when}", filename="asyncio"
+                    )
+                )
+                continue
+                # FIXME: this hides the `await future` that sleep is blocked on
+        except Exception:
+            pass
         try:
             f = n.cr_frame
         except Exception as e:
