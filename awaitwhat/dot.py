@@ -40,7 +40,10 @@ def build_node(task, current):
         except AttributeError:
             name = "Task"
         # FIXME can we ever see a "done" task?
-        state = "current" if task is current else "pending"
+        if task.done():
+            state = "done"
+        else:
+            state = "current" if task is current else "pending"
         return Node(name, state, buf.getvalue(), task)
     elif isinstance(task, asyncio.Future):
         return Node("Future", None, None, task)
