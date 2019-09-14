@@ -20,10 +20,10 @@ Python 3.8.0b4  #👌
 curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
 git clone git@github.com:dimaqq/awaitwhat.git
 cd awaitwhat
-poetry build    # builds a C extension in this project
+poetry shell    # creates a venv and drops you in it
 poetry install  # installs projects dependencies in a venv
-poetry shell    # 
-poetry install -e .
+poetry build    # builds a C extension in this project
+env PYTHONPATH=. python test/test_stack.py
 ```
 
 ### TL;DR
