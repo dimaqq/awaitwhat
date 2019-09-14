@@ -36,15 +36,10 @@ def describe(task, current=None):
             name = task.get_name()
         except AttributeError:
             name = "Task"
-        try:
-            done, pending = await asyncio.wait(task)
-            if done:
-                name = done.name
-            elif pending:
-                name = pending.name
-        except AttributeError:
-            name = "Task"
-        state = "current" if task is current else "pending"
+        if task.done():
+            state = "done"
+        else:
+            state = "current" if task is current else "pending"
         label = concise_stack_trace(f"{name} {state}\n{buf.getvalue()}")
     else:
         label = concise_other(str(task))
