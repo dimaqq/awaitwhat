@@ -8,27 +8,7 @@ from dataclasses import dataclass
 from .blocker import blockers
 from .stack import task_print_stack
 from .node import Node
-
-
-def concise_stack_trace(trace):
-    def clean(line):
-        if line.startswith("Stack for "):
-            return
-        if '"<Sentinel>"' in line:
-            return
-        if re.search('File ".*/site-packages/.*"', line):
-            line = re.sub('[^"]*/site-packages/', "", line)
-        if re.search('File ".*/lib/python[0-9][.][0-9]/.*"', line):
-            line = re.sub('[^"]*/lib/python[0-9][.][0-9]/', "", line)
-        return line
-
-    return "\n".join(filter(None, (clean(l) for l in trace.split("\n"))))
-
-
-def concise_other(other):
-    if other.startswith("<Future "):
-        return "Future"
-    return other
+from .utils import concise_stack_trace, concise_other
 
 
 def build_node(task, current):
