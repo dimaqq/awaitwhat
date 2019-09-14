@@ -1,5 +1,6 @@
 """ Shows what a coroutine waits for """
 import asyncio
+import inspect
 import types
 from . import _what
 
@@ -25,6 +26,14 @@ def extend_stack(s, limit=None):
     while isinstance(stack[-1], types.FrameType):
         if limit is not None and limit >= len(stack):
             break
+        try:
+            # maybe it's `asyncio.sleep()`
+            if stack[-1].f_code is asyncio.sleep.__code__:
+                info = inspect.getcoroutinelocals(stack[-1])
+                stack[-1] = FakeFrame(f"asyncio.sleep({info})")
+                # FIXME: this hides the `await future` that sleep is blocked on
+        except Exception:
+            pass
         try:
             n = _what.next(stack[-1])
         except Exception as e:
