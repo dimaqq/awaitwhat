@@ -20,6 +20,12 @@ class Node:
         return self.task == other.task
 
 
+@dataclass
+class Edge:
+    source_node: Node
+    dest_node: Node
+
+
 def build_node(task, current):
     if isinstance(task, asyncio.Task):
         buf = io.StringIO()
@@ -55,6 +61,6 @@ def build_nodes_and_edges(tasks):
         for task_to_wait in tasks_to_wait:
             dest_node = build_node(task_to_wait, current)
             nodes.add(dest_node)
-            edges.append(f'{id(source_node.task)} -> {id(dest_node.task)}')
+            edges.append(Edge(source_node, dest_node))
 
     return nodes, edges

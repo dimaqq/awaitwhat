@@ -21,7 +21,9 @@ def dumps(tasks):
     node_labesls = prefix.join(
         f'{id(node.task)} {labelify_node(node)}' for node in nodes
     )
-    edge_labels = prefix.join(edges)
+    edge_labels = prefix.join(
+        f'{id(edge.source_node.task)} -> {id(edge.dest_node.task)}' for edge in edges
+    )
 
     return f"""
     digraph {{
