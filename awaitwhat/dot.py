@@ -1,48 +1,10 @@
-import asyncio
-import io
 import json
-import random
-import re
-from .blocker import blockers
-from .stack import task_print_stack
+
+from .node import build_nodes_and_edges
 
 
-def concise_stack_trace(trace):
-    def clean(line):
-        if line.startswith("Stack for "):
-            return
-        if '"<Sentinel>"' in line:
-            return
-        if re.search('File ".*/site-packages/.*"', line):
-            line = re.sub('[^"]*/site-packages/', "", line)
-        if re.search('File ".*/lib/python[0-9][.][0-9]/.*"', line):
-            line = re.sub('[^"]*/lib/python[0-9][.][0-9]/', "", line)
-        return line
-
-    return "\n".join(filter(None, (clean(l) for l in trace.split("\n"))))
-
-
-def concise_other(other):
-    if other.startswith("<Future "):
-        return "Future"
-    return other
-
-
-def describe(task, current=None):
-    if isinstance(task, asyncio.Task):
-        buf = io.StringIO()
-        data = task_print_stack(task, None, buf)
-        try:
-            name = task.get_name()
-        except AttributeError:
-            name = "Task"
-        if task.done():
-            state = "done"
-        else:
-            state = "current" if task is current else "pending"
-        label = concise_stack_trace(f"{name} {state}\n{buf.getvalue()}")
-    else:
-        label = concise_other(str(task))
+def labelify_node(node):
+    label = f"{node.name} {node.state or ''}\n{node.traceback or ''}"
     label = json.dumps(label).replace("\\n", r"\l")
     return f"[label={label}]"
 
@@ -53,23 +15,20 @@ def dumps(tasks):
     Returns a string.
     """
 
-    # dot format requires a node as target of an edge
-    try:
-        current = asyncio.current_task()
-    except RuntimeError:
-        current = None
-    stops = {t: blockers(t) or [f"<Not blocked {random.random()}>"] for t in tasks}
-    nodes = set(sum(stops.values(), list(stops.keys())))
-    nodes = "\n        ".join(f"{id(t)} {describe(t, current)}" for t in nodes)
+    prefix = '\n        '
 
-    edges = "\n        ".join(
-        f"{id(k)} -> {', '.join(str(id(v)) for v in vv)}" for k, vv in stops.items()
+    nodes, edges = build_nodes_and_edges(tasks)
+    node_labels = prefix.join(
+        f'{id(node.task)} {labelify_node(node)}' for node in nodes
+    )
+    edge_labels = prefix.join(
+        f'{id(edge.source_node.task)} -> {id(edge.dest_node.task)}' for edge in edges
     )
 
     return f"""
     digraph {{
         node [shape="note", fontname="Courier New"];
-        {nodes}
-        {edges}
+        {node_labels}
+        {edge_labels}
     }}
     """.strip()

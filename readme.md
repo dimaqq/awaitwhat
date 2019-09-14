@@ -29,7 +29,7 @@ cd awaitwhat
 poetry shell    # creates a venv and drops you in it
 poetry install  # installs projects dependencies in a venv
 poetry build    # builds a C extension in this project
-env PYTHONPATH=. python test/test_shield.py | tee graph.dot
+env PYTHONPATH=. python examples/test_shield.py | tee graph.dot
 dot -Tsvg graph.dot -o graph.svg
 open graph.svg  # or load it in a browser
 ```
