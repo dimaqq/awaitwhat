@@ -18,7 +18,7 @@ def dumps(tasks):
     prefix = '\n        '
 
     nodes, edges = build_nodes_and_edges(tasks)
-    node_labesls = prefix.join(
+    node_labels = prefix.join(
         f'{id(node.task)} {labelify_node(node)}' for node in nodes
     )
     edge_labels = prefix.join(
@@ -28,7 +28,7 @@ def dumps(tasks):
     return f"""
     digraph {{
         node [shape="note", fontname="Courier New"];
-        {node_labesls}
+        {node_labels}
         {edge_labels}
     }}
     """.strip()
