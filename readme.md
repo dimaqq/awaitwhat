@@ -21,6 +21,7 @@ Python 3.7.4    #👌
 dot - graphviz version 2.40.1
 … ~/x/awaitwhat>
 curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+# add ~/.poetry/bin to your PATH
 git clone git@github.com:dimaqq/awaitwhat.git
 cd awaitwhat
 poetry shell    # creates a venv and drops you in it
