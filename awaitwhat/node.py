@@ -34,7 +34,6 @@ def build_node(task, current):
             name = task.get_name()
         except AttributeError:
             name = "Task"
-        # FIXME can we ever see a "done" task?
         if task.done():
             state = "done"
         else:
