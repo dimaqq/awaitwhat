@@ -49,7 +49,7 @@ def describe(task, current=None):
     return f"[label={label}]"
 
 
-def graph(tasks, current=None) -> Tuple[Set[Task], Set[Tuple[Task, Task]]]:
+def graph(tasks) -> Tuple[Set[Task], Set[Tuple[Task, Task]]]:
     """
     Computes a graph of Tasks and awaitables.
     Returns:
@@ -77,7 +77,7 @@ def dumps(tasks):
     except RuntimeError:
         current = None
 
-    nodes, edges = graph(tasks, current=current)
+    nodes, edges = graph(tasks)
     nodes = "\n        ".join(f"{id(t)} {describe(t, current)}" for t in nodes)
     edges = "\n        ".join(f"{id(e[0])} -> {id(e[1])}" for e in edges)
 
