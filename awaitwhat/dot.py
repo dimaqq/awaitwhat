@@ -4,17 +4,11 @@ import re
 
 from dataclasses import dataclass
 
-from .blocker import blockers
-from .node import Node, build_node
-from .utils import concise_stack_trace, concise_other
+from .node import Node, build_node, build_nodes_and_edges
 
 
-def describe(task, current=None):
-    node = build_node(task, current)
-    if isinstance(node.task, asyncio.Task):
-        label = concise_stack_trace(f"{node.name} {node.state}\n{node.traceback}")
-    else:
-        label = concise_other(str(node.task))
+def labelify(node):
+    label = f"{node.name} {node.state or ''}\n{node.traceback or ''}"
     label = json.dumps(label).replace("\\n", r"\l")
     return f"[label={label}]"
 
@@ -25,25 +19,17 @@ def dumps(tasks):
     Returns a string.
     """
 
-    # dot format requires a node as target of an edge
-    try:
-        current = asyncio.current_task()
-    except RuntimeError:
-        current = None
-
     PREFIX = '\n        '
-    stops = {task: blockers(task) for task in tasks}
-    nodes = set(sum(stops.values(), list(stops.keys())))
-    nodes = PREFIX.join(f"{id(node)} {describe(node, current)}" for node in nodes)
-    edges = PREFIX.join(
-        f"{id(task)} -> {', '.join(str(id(task_to_wait)) for task_to_wait in tasks_to_wait)}"
-        for task, tasks_to_wait in stops.items()
-    )
+
+    nodes, edges = build_nodes_and_edges(tasks)
+
+    node_labesls = PREFIX.join(f'{id(node.task)} {labelify(node)}' for node in nodes)
+    edge_labels = PREFIX.join(edges)
 
     return f"""
     digraph {{
         node [shape="note", fontname="Courier New"];
-        {nodes}
-        {edges}
+        {node_labesls}
+        {edge_labels}
     }}
     """.strip()

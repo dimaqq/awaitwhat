@@ -20,4 +20,3 @@ def concise_other(other):
     if other.startswith("<Future "):
         return "Future"
     return other
-
