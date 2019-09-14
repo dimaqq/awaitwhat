@@ -1,5 +1,7 @@
+from __future__ import annotations
 import asyncio
 import io
+import itertools
 import json
 import random
 import re
@@ -47,6 +49,22 @@ def describe(task, current=None):
     return f"[label={label}]"
 
 
+def graph(tasks, current=None) -> Tuple[Set[Task], Set[Tuple[Task, Task]]]:
+    """
+    Computes a graph of Tasks and awaitables.
+    Returns:
+    * a set of all graph nodes
+    * a set of edges (a, b) where a waits for b
+    """
+
+    # dot format requires a node as target of an edge
+    counter = itertools.count()
+    stops = {t: blockers(t) or [f"<Not blocked {next(counter)}>"] for t in tasks}
+    nodes = set(sum(stops.values(), list(stops.keys())))
+    edges = set((k, v) for k, vv in stops.items() for v in vv)
+    return nodes, edges
+
+
 def dumps(tasks):
     """
     Renders Task dependency graph in graphviz format.
@@ -58,13 +76,10 @@ def dumps(tasks):
         current = asyncio.current_task()
     except RuntimeError:
         current = None
-    stops = {t: blockers(t) or [f"<Not blocked {random.random()}>"] for t in tasks}
-    nodes = set(sum(stops.values(), list(stops.keys())))
-    nodes = "\n        ".join(f"{id(t)} {describe(t, current)}" for t in nodes)
 
-    edges = "\n        ".join(
-        f"{id(k)} -> {', '.join(str(id(v)) for v in vv)}" for k, vv in stops.items()
-    )
+    nodes, edges = graph(tasks, current=current)
+    nodes = "\n        ".join(f"{id(t)} {describe(t, current)}" for t in nodes)
+    edges = "\n        ".join(f"{id(e[0])} -> {id(e[1])}" for e in edges)
 
     return f"""
     digraph {{
