@@ -5,6 +5,7 @@ from . import gather
 from . import stack
 from . import dot
 from . import blocker
+from . import helpers
 
 # FIXME: shorter to do
 #
