@@ -23,8 +23,8 @@ async def frob_a_tree():
 
 async def b_tree():
     # Create a task with a global future
-    ff = global_futures[-1]
-    t = asyncio.create_task(frob_a_branch(ff))
+    f = global_futures[-1]
+    t = asyncio.create_task(frob_a_branch(f))
     await asyncio.gather(t)
 
 
