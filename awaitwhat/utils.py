@@ -14,9 +14,3 @@ def concise_stack_trace(trace):
         return line
 
     return '\n'.join(filter(None, (clean(line) for line in trace.split('\n'))))
-
-
-def concise_other(other):
-    if other.startswith("<Future "):
-        return "Future"
-    return other
