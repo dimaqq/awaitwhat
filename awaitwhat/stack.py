@@ -22,7 +22,7 @@ class FakeFrame:
 
 def extend_stack(s, limit=None):
     stack = s[:]
-    while isinstance(stack[-1], types.FrameType):
+    while stack and isinstance(stack[-1], types.FrameType):
         if limit is not None and limit >= len(stack):
             break
         try:
