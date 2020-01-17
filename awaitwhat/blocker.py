@@ -1,12 +1,18 @@
 import inspect
 import random
+from . import sleep
+from .stack import task_get_stack
 
 
 def blockers(task):
     """What does this task wait for?"""
     w = task._fut_waiter
     if not w:
-        return [f'<Not blocked {random.random()}>']
+        return [f"<Not blocked {random.random()}>"]
+    stack = task_get_stack(task, None)
+    if len(stack) > 2 and sleep.mine(stack[-2]):
+        return sleep.decode(stack[-2])
+
     # asyncio.gather()
     try:
         # ideally check `w` type
