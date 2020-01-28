@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "awaitwhat"
-version = "19.1a5"
+version = "20.1"
 description = "async/await introspection"
 authors = ["Dima Tisnek <dimaqq@gmail.com>"]
 license = "MIT"
