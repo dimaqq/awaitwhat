@@ -37,7 +37,7 @@ def test_blockers():
         try:
             await asyncio.sleep(0.11)
 
-            text = awaitwhat.blocker.blockers(t)
+            (text,) = awaitwhat.blocker.blockers(t)
             assert "asyncio.sleep" in text
             assert "scheduled" in text
             assert "delay 42" in text

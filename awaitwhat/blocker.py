@@ -11,7 +11,7 @@ def blockers(task):
         return [f"<Not blocked {random.random()}>"]
     stack = task_get_stack(task, None)
     if len(stack) > 2 and sleep.mine(stack[-2]):
-        return sleep.decode(stack[-2])
+        return [sleep.decode(stack[-2])]
 
     # asyncio.gather()
     try:
