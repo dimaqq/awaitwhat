@@ -6,9 +6,9 @@ Tell you what waits for what in an `async/await` program.
 
 Comms: https://gitter.im/awaitwhat/community
 
-* [Python3.8](https://www.python.org/downloads/release/python-380b4/) (preferred) or [Python 3.7](https://www.python.org/downloads/release/python-374/)
+* Python 3.9, Python 3.8 (preferred) or Python 3.7
 * Your platform dev tools (compiler, etc).
-* Ensure that `python` is 3.8 or 3.7
+* Ensure that `python` is 3.9 or 3.8 or 3.7
 * Install `poetry`
 * Install `graphviz`
 * Clone this repository
