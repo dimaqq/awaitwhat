@@ -1,3 +1,4 @@
+from __future__ import annotations
 import asyncio
 import io
 from dataclasses import dataclass
@@ -19,6 +20,25 @@ class Vertex:
     def __eq__(self, other):
         return self.task == other.task
 
+    @classmethod
+    def build(cls, task, current):
+        if isinstance(task, asyncio.Task):
+            buf = io.StringIO()
+            task_print_stack(task, None, buf)
+            try:
+                name = task.get_name()
+            except AttributeError:
+                name = "Task"
+            if task.done():
+                state = "done"
+            else:
+                state = "current" if task is current else "pending"
+            return cls(name, state, concise_stack_trace(buf.getvalue()), task)
+        elif isinstance(task, asyncio.Future):
+            return cls("Future", None, None, task)
+        else:
+            return cls(str(task), None, None, task)
+
 
 @dataclass
 class Edge:
@@ -26,40 +46,22 @@ class Edge:
     dst: Vertex
 
 
-def build_node(task, current):
-    if isinstance(task, asyncio.Task):
-        buf = io.StringIO()
-        task_print_stack(task, None, buf)
-        try:
-            name = task.get_name()
-        except AttributeError:
-            name = "Task"
-        if task.done():
-            state = "done"
-        else:
-            state = "current" if task is current else "pending"
-        return Vertex(name, state, concise_stack_trace(buf.getvalue()), task)
-    elif isinstance(task, asyncio.Future):
-        return Vertex("Future", None, None, task)
-    else:
-        return Vertex(str(task), None, None, task)
-
-
-def vertices_and_edges(tasks):
+def build(tasks) -> Tuple[Set[Vertex], List[Edge]]:
     try:
         current = asyncio.current_task()
     except RuntimeError:
         current = None
 
     stops = {task: blockers(task) for task in tasks}
-    nodes = set()
+    vertices = set()
     edges = list()
-    for task, tasks_to_wait in stops.items():
-        src = build_node(task, current)
-        nodes.add(src)
-        for task_to_wait in tasks_to_wait:
-            dst = build_node(task_to_wait, current)
-            nodes.add(dst)
+
+    for who, what in stops.items():
+        src = Vertex.build(who, current)
+        vertices.add(src)
+        for blocker in what:
+            dst = Vertex.build(blocker, current)
+            vertices.add(dst)
             edges.append(Edge(src, dst))
 
-    return nodes, edges
+    return vertices, edges

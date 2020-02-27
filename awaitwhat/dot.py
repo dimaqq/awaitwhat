@@ -1,9 +1,10 @@
 import json
 
-from .graph import vertices_and_edges
+from . import graph
 
 
 def label(vertex):
+    """ Graph vertex label in dot format """
     label = f"{vertex.name} {vertex.state or ''}\n{vertex.traceback or ''}"
     label = json.dumps(label).replace("\\n", r"\l")
     return f"[label={label}]"
@@ -17,18 +18,14 @@ def dumps(tasks):
 
     prefix = "\n        "
 
-    vertices, edges = vertices_and_edges(tasks)
-    node_labels = prefix.join(
-        f"{id(vertex.task)} {label(vertex)}" for vertex in vertices
-    )
-    edge_labels = prefix.join(
-        f"{id(edge.src.task)} -> {id(edge.dst.task)}" for edge in edges
-    )
+    vertices, edges = graph.build(tasks)
+    vertices = prefix.join(f"{id(vertex.task)} {label(vertex)}" for vertex in vertices)
+    edges = prefix.join(f"{id(edge.src.task)} -> {id(edge.dst.task)}" for edge in edges)
 
     return f"""
     digraph {{
         node [shape="note", fontname="Courier New"];
-        {node_labels}
-        {edge_labels}
+        {vertices}
+        {edges}
     }}
     """.strip()
