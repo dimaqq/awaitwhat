@@ -26,6 +26,7 @@ def test_wait():
             await asyncio.sleep(0.11)
 
             stack = task_get_stack(t, None)
+            # FIXME this is broken now
             assert awaitwhat.wait.mine(stack[-2])
             text = awaitwhat.wait.decode(stack[-2])
             assert "asyncio.wait" in text
@@ -44,7 +45,7 @@ def test_blockers():
         try:
             await asyncio.sleep(0.11)
 
-            text = awaitwhat.blocker.blockers(t)
+            text = str(awaitwhat.blocker.blockers(t))
             assert "asyncio.wait" in text
             assert "scheduled" in text
             assert "delay 42" in text
