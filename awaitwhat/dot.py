@@ -18,7 +18,7 @@ def dumps(tasks):
 
     prefix = "\n        "
 
-    vertices, edges = graph.build(tasks)
+    vertices, edges = graph.new(tasks)
     vertices = prefix.join(f"{id(vertex.task)} {label(vertex)}" for vertex in vertices)
     edges = prefix.join(f"{id(edge.src.task)} -> {id(edge.dst.task)}" for edge in edges)
 

@@ -7,7 +7,27 @@ from .utils import concise_stack_trace
 from .blocker import blockers
 
 
-@dataclass
+def new(tasks) -> Tuple[Set[Vertex], List[Edge]]:
+    try:
+        current = asyncio.current_task()
+    except RuntimeError:
+        current = None
+
+    vertices = set()
+    edges = list()
+
+    for who in tasks:
+        src = Vertex.new(who, current)
+        vertices.add(src)
+        for what in blockers(who):
+            dst = Vertex.new(what, current)
+            vertices.add(dst)
+            edges.append(Edge(src, dst))
+
+    return vertices, edges
+
+
+@dataclass(frozen=True)
 class Vertex:
     name: str
     state: str
@@ -18,10 +38,10 @@ class Vertex:
         return hash(self.task)
 
     def __eq__(self, other):
-        return self.task == other.task
+        return isinstance(other, Vertex) and self.task == other.task
 
     @classmethod
-    def build(cls, task, current):
+    def new(cls, task, current):
         if isinstance(task, asyncio.Task):
             buf = io.StringIO()
             task_print_stack(task, None, buf)
@@ -40,28 +60,7 @@ class Vertex:
             return cls(str(task), None, None, task)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Edge:
     src: Vertex
     dst: Vertex
-
-
-def build(tasks) -> Tuple[Set[Vertex], List[Edge]]:
-    try:
-        current = asyncio.current_task()
-    except RuntimeError:
-        current = None
-
-    stops = {task: blockers(task) for task in tasks}
-    vertices = set()
-    edges = list()
-
-    for who, what in stops.items():
-        src = Vertex.build(who, current)
-        vertices.add(src)
-        for blocker in what:
-            dst = Vertex.build(blocker, current)
-            vertices.add(dst)
-            edges.append(Edge(src, dst))
-
-    return vertices, edges
