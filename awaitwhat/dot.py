@@ -1,9 +1,9 @@
 import json
 
-from .node import build_nodes_and_edges
+from .node import vertices_and_edges
 
 
-def labelify_node(node):
+def label(node):
     label = f"{node.name} {node.state or ''}\n{node.traceback or ''}"
     label = json.dumps(label).replace("\\n", r"\l")
     return f"[label={label}]"
@@ -15,14 +15,12 @@ def dumps(tasks):
     Returns a string.
     """
 
-    prefix = '\n        '
+    prefix = "\n        "
 
-    nodes, edges = build_nodes_and_edges(tasks)
-    node_labels = prefix.join(
-        f'{id(node.task)} {labelify_node(node)}' for node in nodes
-    )
+    vertices, edges = vertices_and_edges(tasks)
+    node_labels = prefix.join(f"{id(node.task)} {label(node)}" for node in vertices)
     edge_labels = prefix.join(
-        f'{id(edge.source_node.task)} -> {id(edge.dest_node.task)}' for edge in edges
+        f"{id(edge.src.task)} -> {id(edge.dst.task)}" for edge in edges
     )
 
     return f"""
