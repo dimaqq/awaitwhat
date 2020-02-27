@@ -1,10 +1,10 @@
 import json
 
-from .node import vertices_and_edges
+from .graph import vertices_and_edges
 
 
-def label(node):
-    label = f"{node.name} {node.state or ''}\n{node.traceback or ''}"
+def label(vertex):
+    label = f"{vertex.name} {vertex.state or ''}\n{vertex.traceback or ''}"
     label = json.dumps(label).replace("\\n", r"\l")
     return f"[label={label}]"
 
@@ -18,7 +18,9 @@ def dumps(tasks):
     prefix = "\n        "
 
     vertices, edges = vertices_and_edges(tasks)
-    node_labels = prefix.join(f"{id(node.task)} {label(node)}" for node in vertices)
+    node_labels = prefix.join(
+        f"{id(vertex.task)} {label(vertex)}" for vertex in vertices
+    )
     edge_labels = prefix.join(
         f"{id(edge.src.task)} -> {id(edge.dst.task)}" for edge in edges
     )
