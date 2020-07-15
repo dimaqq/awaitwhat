@@ -37,5 +37,5 @@ black = { version = "^19.3b0", python = "^3.8" }
 pre-commit = "^1.18.2"
 
 [build-system]
-requires = ["poetry>=1.0.0b1"]
+requires = ["poetry>=1.0.0b1", "setuptools"]
 build-backend = "poetry.masonry.api"
