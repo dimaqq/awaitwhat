@@ -2,6 +2,10 @@
 
 Tell you what waits for what in an `async/await` program.
 
+### Alpine
+
+You'll need `apk add build-base openssl-dev libffi-dev`
+
 ## Sprint Setup
 
 Comms: https://gitter.im/awaitwhat/community
