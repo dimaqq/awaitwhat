@@ -15,23 +15,26 @@ Comms: https://gitter.im/awaitwhat/community
 * Look at [tests](https://github.com/dimaqq/awaitwhat/tree/master/test)
 * Look at [issues](https://github.com/dimaqq/awaitwhat/issues)
 
-```
+```console
 > python --version
-Python 3.8.0b4  #🧡
-Python 3.7.4    #👌
+Python 3.9.0b4  #🧡
+Python 3.8.4    #👌
+
 > dot -V
 dot - graphviz version 2.40.1
-… ~/x/awaitwhat>
-curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+
+> curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
 # add ~/.poetry/bin to your PATH
-git clone git@github.com:dimaqq/awaitwhat.git
-cd awaitwhat
-poetry shell    # creates a venv and drops you in it
-poetry install  # installs projects dependencies in a venv
-poetry build    # builds a C extension in this project
-env PYTHONPATH=. python examples/test_shield.py | tee graph.dot
-dot -Tsvg graph.dot -o graph.svg
-open graph.svg  # or load it in a browser
+
+> git clone git@github.com:dimaqq/awaitwhat.git
+> cd awaitwhat
+~/awaitwhat (dev|✔) > poetry shell    # creates a venv and drops you in it
+(awaitwhat-x-py3.9) ~/awaitwhat (dev|✔) > poetry install  # installs projects dependencies in a venv
+(awaitwhat-x-py3.9) ~/awaitwhat (dev|✔) > poetry build    # builds a C extension in this project
+
+(awaitwhat-x-py3.9) ~/awaitwhat (dev|✔) > env PYTHONPATH=. python examples/test_shield.py | tee graph.dot
+(awaitwhat-x-py3.9) ~/awaitwhat (dev|✔) > dot -Tsvg graph.dot -o graph.svg
+(awaitwhat-x-py3.9) ~/awaitwhat (dev|✔) > open graph.svg  # or load it in a browser
 ```
 
 ### TL;DR
