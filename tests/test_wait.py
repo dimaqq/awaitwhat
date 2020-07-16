@@ -1,4 +1,5 @@
 import asyncio
+import pytest
 import awaitwhat.wait
 import awaitwhat.blocker
 from awaitwhat.stack import task_get_stack
@@ -19,6 +20,7 @@ async def debug():
     return stack
 
 
+@pytest.mark.xfail(reason="asyncio.wait support incomplete #6")
 def test_wait():
     async def test():
         t = asyncio.create_task(a())
@@ -39,6 +41,7 @@ def test_wait():
     return asyncio.run(test())
 
 
+@pytest.mark.xfail(reason="asyncio.wait support incomplete #6")
 def test_blockers():
     async def test():
         t = asyncio.create_task(a())
