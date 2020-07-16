@@ -29,6 +29,7 @@ dot - graphviz version 2.40.1
 > git clone git@github.com:dimaqq/awaitwhat.git
 > cd awaitwhat
 ~/awaitwhat (dev|✔) > poetry shell    # creates a venv and drops you in it
+
 (awaitwhat-x-py3.9) ~/awaitwhat (dev|✔) > poetry install  # installs projects dependencies in a venv
 (awaitwhat-x-py3.9) ~/awaitwhat (dev|✔) > poetry build    # builds a C extension in this project
 
