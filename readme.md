@@ -2,6 +2,11 @@
 
 Tells you what waits for what in an `async/await` program.
 
+### Python 3.10.0a1
+
+It seems the API was changed in 3.10 and the C extension doesn't compile.
+I'll investigate...
+
 ### Alpine
 
 You'll need `apk add build-base openssl-dev libffi-dev`
