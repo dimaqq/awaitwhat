@@ -2,6 +2,7 @@ import inspect
 import random
 from . import sleep
 from .stack import task_get_stack
+from . import wait_for
 
 
 def blockers(task):
@@ -12,9 +13,13 @@ def blockers(task):
 
     stack = task_get_stack(task, None)
 
-    if len(stack) > 2 and sleep.mine(stack[-2]):
-        return [sleep.decode(stack[-2])]
-
+    if len(stack) > 2:
+        if sleep.mine(stack[-2]):
+            return [sleep.decode(stack[-2])]
+        elif wait_for.mine(stack[-2]):
+            wait_for_string, awaitable = wait_for.decode(stack[-2])
+            return [wait_for_string, awaitable]
+        
     # asyncio.gather()
     try:
         # ideally check `w` type
