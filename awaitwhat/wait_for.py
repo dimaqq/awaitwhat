@@ -20,7 +20,6 @@ def decode(frame):
         awaitable = frame.f_locals["fut"]
     except Exception:
         awaitable = None
-    # print("Awaitable type is", type(awaitable))
     return [
         f"asyncio.wait_for: timeout {timeout} remaining {timeout_remaining}",
         awaitable,
