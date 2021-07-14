@@ -23,7 +23,7 @@ def new(tasks) -> Tuple[Set[Vertex], List[Edge]]:
         if len(children) > 1 and isinstance(children[1], asyncio.Task):
             # This is a wait_for task
             # We get two vertices, one for wait_for(dst1)
-            # and other for the awaitable that wait_for 
+            # and other for the awaitable that wait_for
             # awaits on(dst2)
             dst1 = Vertex.new(children[0], current)
             dst2 = Vertex.new(children[1], current)

@@ -19,9 +19,9 @@ async def do_work():
     branch = frob_a_branch(f)
     await asyncio.wait_for(branch, 15)
 
+
 async def frob_a_branch(f):
     await f
-
 
 
 def name(t):

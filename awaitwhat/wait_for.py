@@ -1,7 +1,9 @@
 import asyncio
 
+
 def mine(frame):
     return asyncio.wait_for.__code__ == frame.f_code
+
 
 def decode(frame):
     try:
@@ -19,6 +21,7 @@ def decode(frame):
     except Exception:
         awaitable = None
     # print("Awaitable type is", type(awaitable))
-    return [f"asyncio.wait_for: timeout {timeout} remaining {timeout_remaining}", awaitable]
-
-        
+    return [
+        f"asyncio.wait_for: timeout {timeout} remaining {timeout_remaining}",
+        awaitable,
+    ]

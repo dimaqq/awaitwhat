@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "awaitwhat"
-version = "20.3"
+version = "21.1"
 description = "async/await introspection"
 authors = ["Dima Tisnek <dimaqq@gmail.com>"]
 license = "MIT"
@@ -28,13 +28,13 @@ build = "build.py"
 packages = [{include = "awaitwhat"}]
 
 [tool.poetry.dependencies]
-python = ">=3.7"
+python = ">=3.7,<3.10"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
 ipython = "*"
-black = { version = "^19.10b0", allow-prereleases = true }
-pre-commit = "^1.18.2"
+black = { version = "^21.6b0", allow-prereleases = true }
+pre-commit = "^2"
 
 [build-system]
 requires = ["poetry>=1.0.9"]

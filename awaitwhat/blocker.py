@@ -19,7 +19,7 @@ def blockers(task):
         elif wait_for.mine(stack[-2]):
             wait_for_string, awaitable = wait_for.decode(stack[-2])
             return [wait_for_string, awaitable]
-        
+
     # asyncio.gather()
     try:
         # ideally check `w` type
