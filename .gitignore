@@ -7,3 +7,4 @@ __pycache__/
 /awaitwhat/*.so
 graph.dot
 graph.svg
+.vscode/
