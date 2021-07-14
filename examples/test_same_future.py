@@ -2,7 +2,8 @@ import asyncio
 import awaitwhat
 
 
-global_futures = list() # Structure to hold a global future
+global_futures = list()  # Structure to hold a global future
+
 
 async def main():
     # generate a global future

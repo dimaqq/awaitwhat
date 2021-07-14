@@ -13,4 +13,4 @@ def concise_stack_trace(trace):
             line = re.sub('[^"]*/lib/python[0-9][.][0-9]/', "", line)
         return line
 
-    return '\n'.join(filter(None, (clean(line) for line in trace.split('\n'))))
+    return "\n".join(filter(None, (clean(line) for line in trace.split("\n"))))
