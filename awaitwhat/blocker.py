@@ -17,8 +17,8 @@ def blockers(task):
         if sleep.mine(stack[-2]):
             return [sleep.decode(stack[-2])]
         elif wait_for.mine(stack[-2]):
-            wait_for_string, awaitable = wait_for.decode(stack[-2])
-            return [wait_for_string, awaitable]
+            status, awaitable = wait_for.decode(stack[-2])
+            return [status, awaitable]
 
     # asyncio.gather()
     try:
